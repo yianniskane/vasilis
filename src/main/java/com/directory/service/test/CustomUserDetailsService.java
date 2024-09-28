@@ -3,6 +3,7 @@ package com.directory.service.test;
 
 import com.directory.entity.User;
 import com.directory.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+@Slf4j
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository; // Inject your repository

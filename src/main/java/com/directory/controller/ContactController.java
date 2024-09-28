@@ -83,29 +83,12 @@ public class ContactController {
         }
     }
 
-//    @GetMapping("/logout")
-//    public String logout() {
-//        return "redirect:/login?logout";
-//    }
-
-//
-//    @GetMapping({"/main"})
-//    public String showMainForm() {
-//        return "main";
-//    }
 
     @GetMapping({"/cards"})
     public String showCards() {
         return "cards";
     }
 
-
-//    @GetMapping({"/pages-login"})
-//    public String showLogin() {
-////        User user = new User();
-////        model.addAttribute("user", user);
-//        return "pages-login";
-//    }
 
     @RequestMapping({"/login-error"})
     public String loginError(Model model) {
@@ -177,7 +160,7 @@ public class ContactController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Αδυναμία έυρεσης επαφής."));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(Utility.generateJSON((Contact)contact.get(0)));
+        return ResponseEntity.status(HttpStatus.OK).body(Utility.generateJSON(contact.get(0)));
     }
 
     @PutMapping(
@@ -194,7 +177,7 @@ public class ContactController {
             } else if (!telephone.isEmpty() && !Utility.validateTelephone(telephone)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το τηλέφωνο."));
             } else {
-                int res = this.serviceImpl.updateContact(date_recorded.isEmpty() ? null : date_recorded, telephone, email, street, area, city, nomos, zip, seller, manager, company, afm, comments, completed.equals("1") ? Boolean.TRUE : Boolean.FALSE, followup.isEmpty() ? null : followup, ignored.equals("1") ? Boolean.TRUE : Boolean.FALSE, last_comm_date.equals("") ? null : last_comm_date, orders, Integer.valueOf(contact_no));
+                int res = this.serviceImpl.updateContact(date_recorded.isEmpty() ? null : date_recorded, telephone, email, street, area, city, nomos, zip, seller, manager, company, afm, comments, completed.equals("1") ? Boolean.TRUE : Boolean.FALSE, followup.isEmpty() ? null : followup, ignored.equals("1") ? Boolean.TRUE : Boolean.FALSE, last_comm_date.isEmpty() ? null : last_comm_date, orders, Integer.valueOf(contact_no));
                 ObjectMapper mapper = (new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT);
                 return res > 0 ? ResponseEntity.ok(mapper.writeValueAsString("Η ενημέρωση με Α/Α = " + contact_no + " ήταν επιτυχής")) : ResponseEntity.ok(mapper.writeValueAsString("Προέκυψε σφάλμα στην ενημέρωση με Α/Α = " + contact_no));
             }
@@ -314,7 +297,7 @@ public class ContactController {
 
                 contact.setFax(fax);
             } else {
-                contact.setFax((String)null);
+                contact.setFax(null);
             }
 
             if (followup.isEmpty()) {
@@ -327,7 +310,7 @@ public class ContactController {
             contact.setManager(manager);
             contact.setOrders(orders);
             if (last_comm_date.isEmpty()) {
-                contact.setLast_comm_date((String)null);
+                contact.setLast_comm_date(null);
             } else {
                 contact.setLast_comm_date(Utility.stringToDate(last_comm_date));
             }
@@ -340,7 +323,7 @@ public class ContactController {
 
                 contact.setTelephone(telephone);
             } else {
-                contact.setTelephone((String)null);
+                contact.setTelephone(null);
             }
 
             contact.setSeller(seller);
@@ -455,7 +438,7 @@ public class ContactController {
             this.cardRepo.save(ci);
             return ResponseEntity.status(HttpStatus.OK).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση της επαφής πέτυχε"));
         } catch (Exception e) {
-            logger.error("saveContact -- {}", e.getMessage());
+            logger.error("saveContactCard -- {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση της επαφής απέτυχε"));
         }
     }
