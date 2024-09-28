@@ -116,6 +116,7 @@ public class ContactController {
     @GetMapping({"/pages-register"})
     public String showRegistrationForm(Model model) {
         User user = new User();
+
         model.addAttribute("user", user);
         return "pages-register";
     }
