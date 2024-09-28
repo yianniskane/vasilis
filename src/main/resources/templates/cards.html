@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="utf-8">
+    <link type="image/x-icon" rel="icon" href="/static/img/favicon.ico">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>e-επαφές</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/GedMarc/bootstrap4-dialog/dist/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/GedMarc/bootstrap4-dialog/dist/js/bootstrap-dialog.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>-->
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/1.7.3/jeditable.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker();
+
+            $('#recorded').datepicker({
+                orientation: "bottom",
+                autoclose: true,
+                todayHighlight: true,
+                format: "dd-mm-yyyy",
+            });
+
+            drawGrid1();
+
+            $( ".position-absolute span" ).on('click', function(e) {
+                let personId = $(this).text();
+                $('#person_id').val(personId);
+                $('#myModalNew').modal('show');
+                // saveEditedCard(personId);
+            });
+
+            //Αποθήκευση
+            $('#menu1').on('click', function() {
+                $('#myModalNew').modal('show');
+            });
+
+
+            $('#yes_m').on('click', function() {
+                saveCard();
+                reloadCard();
+            });
+        });
+
+        function saveCard() {
+            $.ajax({
+                type: "GET",
+                url: '/showcard/save',
+                dataType: "json",
+                data: {
+                    date_recorded: $('#date_recorded').val(),
+                    email: $('#email').val(),
+                    fullname: $('#fullname').val(),
+                    company: $('#company').val(),
+                    profession: $('#profession').val(),
+                    street: $('#street').val(),
+                    city: $('#city').val(),
+                    zip: $('#zip').val(),
+                    area: $('#area').val(),
+                    nomos: $('#nomos').val(),
+                    country: $('#country').val(),
+                    cellphone: $('#cellphone').val(),
+                    telephone: $('#telephone').val(),
+                    fax: $('#fax').val(),
+                    www: $('#www').val()
+                },
+                success: function (data) {
+                    showSuccess(data);
+                }, error: function (jqXHR, exception) {
+                    showError("Η καταχώρηση της επαφής απέτυχε.");
+                }
+            });
+        }
+
+        function drawGrid1(){
+            $.ajax({
+                type: "GET",
+                url: '/showcard',
+                dataType: "json",
+                success: function (data) {
+                    let div = '';
+                    let j = 3;
+
+                    for (let i = 0; i < data.length; i++) {
+                        let item = data[i];
+
+                        if(i % 3 === 0)
+                            div +=  "<div class='row'>";
+
+                        div +=  "<div class='col-md-4'>" +
+                            '<div class="product"> ' +
+                            '     <div class="card">'+
+                            '         <div class="card-body">'+
+                            '             <div class="d-flex align-items-center">'+
+                            '                 <div><i class="mdi mdi-card-account-details avatar-lg img-thumbnail mdi-48px"></i></div>'+
+                            '                 <div class="flex-1 ms-3">'+
+                            '                     <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">' + item.lastName + ' ' + item.firstName + '</a></h5>'+
+                            '                     <span class="badge badge-soft-success mb-0">' + item.profession + '</span>'+
+                            '                 </div>'+
+                            '             </div>'+
+                            '             <div class="mt-3 pt-1">'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-bank font-size-15 align-middle pe-2 text-primary"></i> ' + item.company + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-phone font-size-15 align-middle pe-2 text-primary"></i> ' + item.cellPhone + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-email font-size-15 align-middle pe-2 text-primary"></i> ' + item.email + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>  ' + item.address + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-web font-size-15 align-middle pe-2 text-primary"></i> ' + item.www + '</p>'+
+                            '             </div>'+
+                            '     </div>'+
+                            '   </div>' +
+                            '</div>' +
+                            '</div>';
+
+                        if(i === 2)  {
+                            j += 3
+                            div +=  "</div>";
+                        }
+                    }
+
+                    document.getElementById('container').innerHTML = div;
+                }, error: function (jqXHR, exception) {
+                    showError("Η καταχώρηση της επαφής απέτυχε.");
+                }
+            });
+        }
+
+
+        function reloadCard() {
+            $.ajax({
+                type: "GET",
+                url: '/showcard/refresh',
+                dataType: "json",
+                success: function (data) {
+                    showSuccess(data);
+                }, error: function (jqXHR, exception) {
+                    showError("Η καταχώρηση της επαφής απέτυχε.");
+                }
+            });
+        }
+
+
+        function saveEditedCard(personid) {
+            $.ajax({
+                type: "POST",
+                url: '/showcard/edit/' + personid,
+                dataType: "json",
+                success: function (data) {
+                    showSuccess(data);
+                }, error: function (jqXHR) {
+                    showError(errorText(jqXHR));
+                }
+            });
+        }
+
+        function showError(text){
+            BootstrapDialog.show({
+                title: "<i class='fas fa-exclamation-triangle fa-lg'></i>&nbsp;",
+                message: text,
+                closable: true,
+                type: BootstrapDialog.TYPE_DANGER,
+                closeByBackdrop: false,
+                closeByKeyboard: false,
+                buttons: [{
+                    label: 'Έξοδος',
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        }
+
+        function  showSuccess(text) {
+            BootstrapDialog.show({
+                title: "<i class='fas fa-check fa-lg'></i>&nbsp;",
+                message: text,
+                closable: true,
+                type: BootstrapDialog.TYPE_SUCCESS,
+                closeByBackdrop: false,
+                closeByKeyboard: false,
+                buttons: [{
+                    label: 'Έξοδος',
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        }
+    </script>
+
+    <style>
+        .mdi-48px { font-size: 48px; }
+        .row{
+
+            display:block;
+
+
+        }
+        .col-md-4{
+
+            display: inline-block;
+        }
+        .page-container{
+            margin-top:40px;
+        }
+        figure.user-card {
+            background: #ffffff;
+            padding: 20px;
+            border-top: 3px solid #f2f2f2;
+            border: 1px solid #e1e5f1;
+            text-align: center;
+        }
+
+        figure.user-card.red {
+            border-top: 3px solid #fc6d4c;
+        }
+
+        figure.user-card.green {
+            border-top: 3px solid #3ecfac;
+        }
+
+        figure.user-card.blue {
+            border-top: 3px solid #5a99ee;
+        }
+
+        figure.user-card.yellow {
+            border-top: 3px solid #ffc139;
+        }
+
+        figure.user-card.orange {
+            border-top: 3px solid #ff5000;
+        }
+
+        figure.user-card.teal {
+            border-top: 3px solid #47BCC7;
+        }
+
+        figure.user-card.pink {
+            border-top: 3px solid #ff9fd0;
+        }
+
+        figure.user-card.brown {
+            border-top: 3px solid #79574b;
+        }
+
+        figure.user-card.purple {
+            border-top: 3px solid #904e95;
+        }
+
+        figure.user-card.fb {
+            border-top: 3px solid #3B5998;
+        }
+
+        figure.user-card.gp {
+            border-top: 3px solid #E02F2F;
+        }
+
+        figure.user-card .profile {
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            max-width: 72px;
+            margin-bottom: 20px;
+        }
+
+        figure.user-card h5 {
+            margin: 0 0 5px 0;
+        }
+
+        figure.user-card h6 {
+            margin: 0 0 15px 0;
+            color: #8796af;
+            font-size: 14px;
+        }
+
+        figure.user-card p {
+            margin: 0;
+            padding: 0 0 15px 0;
+            color: #8796af;
+            line-height: 150%;
+            font-size: .85rem;
+        }
+
+        figure.user-card ul.contacts {
+            margin: 0;
+            padding: 0 0 15px 0;
+            line-height: 150%;
+            font-size: .85rem;
+        }
+
+        figure.user-card ul.contacts li {
+            padding: .2rem 0;
+        }
+
+        figure.user-card ul.contacts li a {
+            color: #5a99ee;
+        }
+
+        figure.user-card ul.contacts li a i {
+            min-width: 36px;
+            float: left;
+            font-size: 1rem;
+        }
+
+        figure.user-card ul.contacts li:last-child a {
+            color: #ff5000;
+        }
+
+        ul li {
+            list-style-type: none;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: bolder;
+        }
+
+        .btn {
+            padding: .55rem 1.5rem .45rem;
+        }
+
+        .bolded {
+            font-weight:bold;
+        }
+
+        td { font-size: 13px; }
+
+        .input-xs {
+            height: 28px;
+            padding: 2px 5px;
+            font-size: 13px;
+            line-height: 1.5;
+            border-radius: 3px;
+        }
+
+        .input-search-xs {
+            height: 34px;
+            padding: 2px 5px;
+            font-size: 13px;
+            line-height: 1.5;
+            border-radius: 3px;
+        }
+
+        .text_filter{
+            width:45%;
+            min-width:200px;
+        }
+
+    </style>
+
+    <style>
+        body{margin-top:20px;
+            background-color:#eee;
+        }
+        .card {
+            margin-bottom: 24px;
+            box-shadow: 0 2px 3px #e4e8f0;
+        }
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1px solid #eff0f2;
+            border-radius: 1rem;
+        }
+        .avatar-md {
+            height: 4rem;
+            width: 4rem;
+        }
+        .rounded-circle {
+            border-radius: 50%!important;
+        }
+        .img-thumbnail {
+            padding: 0.25rem;
+            background-color: #f1f3f7;
+            border: 1px solid #eff0f2;
+            border-radius: 0.75rem;
+        }
+        .avatar-title {
+            align-items: center;
+            background-color: #3b76e1;
+            color: #fff;
+            display: flex;
+            font-weight: 500;
+            height: 100%;
+            justify-content: center;
+            width: 100%;
+        }
+        .bg-soft-primary {
+            background-color: rgba(59,118,225,.25)!important;
+        }
+        a {
+            text-decoration: none!important;
+        }
+        .badge-soft-danger {
+            color: #f56e6e !important;
+            background-color: rgba(245,110,110,.1);
+        }
+        .badge-soft-success {
+            color: #63ad6f !important;
+            background-color: rgba(99,173,111,.1);
+        }
+        .mb-0 {
+            margin-bottom: 0!important;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.6em;
+            font-size: 75%;
+            font-weight: 500;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+<div>
+        <div class="container">
+    <nav class="navbar  navbar-expand-md fixed-top " style="background: #D3D3D3;">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="font-size: xx-large; font-weight: bolder;padding-right: 70pt" href="#">e-επαφές</a>
+<!--            <a href="#" class="nav-link "  style="padding-bottom: 2px">Επαγγελματικές Κάρτες</a>-->
+            <a href="" class="nav-link text-center" style="padding-bottom: 2px">
+                <div>
+                    <i class="fa fa-thumbtack fa-lg mb-1"></i>
+                </div>
+                Επαγγελματικές Κάρτες
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown" style="padding-right: 50pt">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Επιλέξτε Ενέργεια</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" id="menu1"> <i class="fas fa-pen pe-2"></i>Καταχώρηση</a>
+                            <a class="dropdown-item" id="menu2"> <i class="fas fa-clipboard pe-2"></i>Ενημέρωση</a>
+                            <a class="dropdown-item" id="menu0"> <i class="fas fa-trash pe-2"></i>Διαγραφή</a>
+                            <a class="dropdown-item" href="main.html" th:href="@{/contacts}"><i class="fas fa-arrow-left pe-2"></i>Επαφές</a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item"> <i class="fas fa-door-open pe-2"></i>Έξοδος</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+        </div>
+    <br/><br/><br/><br/><br/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css"/>
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h5 class="card-title">Contact List <span class="text-muted fw-normal ms-2">(834)</span></h5>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+                    <div>
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="top" title="List"><i class="bx bx-list-ul"></i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a aria-current="page" href="#" class="router-link-active router-link-exact-active nav-link active" data-bs-toggle="tooltip" data-bs-placement="top" title="Grid"><i class="bx bx-grid-alt"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a href="#" data-bs-toggle="modal" data-bs-target=".add-new" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Add New</a>
+                    </div>
+                    <div class="dropdown">
+                        <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="container">
+
+        </div>
+<!--        <div class="row g-0 align-items-center pb-4">-->
+<!--            <div class="col-sm-6">-->
+<!--                <div><p class="mb-sm-0">Showing 1 to 10 of 57 entries</p></div>-->
+<!--            </div>-->
+<!--            <div class="col-sm-6">-->
+<!--                <div class="float-sm-end">-->
+<!--                    <ul class="pagination mb-sm-0">-->
+<!--                        <li class="page-item disabled">-->
+<!--                            <a href="#" class="page-link"><i class="mdi mdi-chevron-left"></i></a>-->
+<!--                        </li>-->
+<!--                        <li class="page-item active"><a href="#" class="page-link">1</a></li>-->
+<!--                        <li class="page-item"><a href="#" class="page-link">2</a></li>-->
+<!--                        <li class="page-item"><a href="#" class="page-link">3</a></li>-->
+<!--                        <li class="page-item"><a href="#" class="page-link">4</a></li>-->
+<!--                        <li class="page-item"><a href="#" class="page-link">5</a></li>-->
+<!--                        <li class="page-item">-->
+<!--                            <a href="#" class="page-link"><i class="mdi mdi-chevron-right"></i></a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+<!--    <div class="container page-container" id="container">-->
+<!--        <div id="for_loop" class="row gutters">-->
+<!--            &lt;!&ndash;        <th:block th:with="partitions=${T(org.apache.commons.collections4.ListUtils).partition(cards, 4)}">&ndash;&gt;-->
+<!--            &lt;!&ndash;            <div class="row" th:each="partition: ${partitions}">&ndash;&gt;-->
+<!--            <div  class="col-sm-3" th:each="card, iter: ${cards}">-->
+<!--                <div class="product">-->
+<!--                    <figure class="user-card green">-->
+<!--                     <span class="position-absolute  translate-middle badge rounded-pill bg-danger">-->
+<!--                        <span id="cardid" th:text="${card.id}"></span>-->
+<!--                      </span>-->
+<!--                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Milestone Admin" class="profile">-->
+<!--                        <h6><span th:text="${card.fullname}"></span></h6>-->
+<!--                        <h6><span th:text="${card.profession}"></span></h6>-->
+<!--                        <span th:text="${card?.address?.street} + ', ' +  ${card?.address?.area}"></span>-->
+<!--                        <span th:text="${card?.address?.zip}  + ', ' + ${card?.address?.city} + ', ' + ${card?.address?.country}"></span>-->
+<!--                        <p><span th:text="${card.company}"></span></p>-->
+<!--                        <p><span th:text="'Κιν. ' + ${card.cellphone} + ' / Στάθ. ' + ${card.telephone}"></span></p>-->
+<!--                        <ul class="contacts">-->
+<!--                            <li>-->
+<!--                                <a href="#">-->
+<!--                                    <span th:text="${card.email}"></span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a href="#">-->
+<!--                                    <span th:text="${card.www}"></span>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </figure>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--</div>-->
+
+<br/><br/><br/><br/>
+<div class="text-center p-3">
+    © 2023 Copyright:
+    <a>PerfectShade. All rights reserved.</a>
+</div>
+
+
+<div id="myModalNew" class="modal fade bd-example-modal-xl" style="height: auto" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ενημέρωση Επαφής</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group ">
+                                    <input type="text" id="person_id" class="form-control input-xs" readonly/>
+                                    <label style="font-size: small" class="form-label" for="person_id">Κωδικός</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs date" id="recorded">
+                                        <input type="text" class="form-control input-xs" id="date_recorded" autocomplete="off"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="date_recorded">Ημερομηνία</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-envelope"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="email" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="email">e-mail</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="fullname" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="fullname">Ονοματεπώνυμο</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-building"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="company" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="company">Εταιρεία</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-industry"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="profession" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="profession">Επάγγελμα/Θέση</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-5" style="padding-top: 17px">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="street" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="street">Διεύθυνση (Οδός-αριθμός)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4" style="padding-top: 17px">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-city"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="city" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="city">Πόλη</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2" style="padding-top: 17px">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="zip" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="zip">Ταχ. Κώδικας</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="area" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="area">Περιοχή</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="nomos" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="nomos">Νομός</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="country" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="country">Χώρα</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-mobile"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="cellphone" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="cellphone">Κινητό Τηλέφωνο</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-phone"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="telephone" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="telephone">Τηλέφωνο Γραφείου</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-fax"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="fax" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="fax">Φάξ</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-7">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-globe"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="www" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="www">Website</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal" id="no_m">Ακύρωση</button>
+                    <button type="button" class="btn btn-success btn-sm" id="yes_m">Ενημέρωση</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon"  href="/static/img/favicon.ico">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>e-επαφές</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/GedMarc/bootstrap4-dialog/dist/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/GedMarc/bootstrap4-dialog/dist/js/bootstrap-dialog.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+
+    <script src=" https://cdn.jsdelivr.net/npm/jquery-datetime-picker@2.5.11/build/jquery.datetimepicker.full.min.js "></script>
+    <link href=" https://cdn.jsdelivr.net/npm/jquery-datetime-picker@2.5.11/jquery.datetimepicker.min.css " rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/1.7.3/jeditable.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/b-2.2.3/b-print-2.2.3/date-1.1.2/fh-3.2.4/r-2.3.0/rr-1.2.8/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/b-2.2.3/b-print-2.2.3/date-1.1.2/fh-3.2.4/r-2.3.0/rr-1.2.8/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.13.4/api/row().show().js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min."></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="/js/util.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+
+
+    <script>
+        $(document).ready(function () {
+            // jQuery('#recorded, #last, #follows, #recorded_m, #last_comm_date, #follows_m, #ff, #tt, #card_date_recorded, #until_date, #from_date').datetimepicker({
+            //     allowTimes:[
+            //         '08:00', '08:30', '09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00', '13:30',
+            //         '14:00','14:30','15:00', '15:30','16:00','16:30',
+            //         '17:00', '17:30', '18:00', '18:30','19:00', '19:30','20:00', '20:30',
+            //     ],
+            //     format:'d-m-Y'
+            // });
+
+            jQuery('#recorded, #last, #followup, #recorded_m, #date_recorded, #last_comm_date, #follows_m, #ff, #tt, #card_date_recorded, #until_date, #from_date').datetimepicker({
+
+                format:'d-m-Y'
+            });
+
+            jQuery.datetimepicker.setLocale('el');
+            // getContactCards();
+            let constDate = '01-01-1990';
+            const url_final = '/listcontacts';
+            let idx = 0;
+            let cno = '';
+
+            $('#example2').on('click', 'tbody td', function () {
+                idx = datatable.row(this).index();
+                $('#myModalNew').modal('show');
+                cno = datatable.row($(this)).data()[0];
+                $('#contact_no_m').val(cno).prop('disabled', true);
+
+                $.ajax({
+                    type: "GET",
+                    url: '/showcontact_tbl/' + cno,
+                    dataType: "json",
+                    success: function (data) {
+                        $('#contact_no_m').val(data.contact_no);
+                        $('#date_recorded_m').val(data.date_recorded == null ? '' : reverseDate(data.date_recorded));
+                        $('#company_m').val(data.company);
+                        $('#manager_m').val(data.manager);
+                        $('#email_m').val(data.email);
+                        $('#telephone_m').val(data.telephone);
+                        $('#fax_m').val(data.fax);
+                        $('#orders_m').val(data.orders);
+                        $('#comments_m').val(data.comments);
+                        $('#seller_m').val(data.seller);
+                        $('#last_comm_date_m').val(data.last_comm_date == null ? '' : reverseDate(data.last_comm_date));
+                        $('#completed_m').val(data.completed);
+                        $('#followup_m').val(data.followup == null ? '' : reverseDate(data.followup));
+                        $('#ignored_m').val(data.ignored);
+                        $('#afm_m').val(data.afm);
+                        $('#street_m').val(data.address.street);
+                        $('#city_m').val(data.address.city);
+                        $('#nomos_m').val(data.address.nomos);
+                        $('#zip_m').val(data.address.zip);
+                        $('#area_m').val(data.address.area);
+
+                        if (data.completed === true) {
+                            $('#completed_m').prop('checked', true);
+                        } else {
+                            $('#completed_m').prop('checked', false);
+                        }
+
+                        if (data.ignored === true) {
+                            $('#ignored_m').prop('checked', true);
+                        } else {
+                            $('#ignored_m').prop('checked', false);
+                        }
+                    }, error: function (jqXHR) {
+                        showError(errorText(jqXHR));
+                    }
+                });
+            });
+
+            $('#example2 thead tr')
+                .clone(true)
+                .addClass('filters')
+                .appendTo('#example2 thead');
+
+            drawGrid1('/listcontacts');
+            drawCards();
+
+            $('#new_card').on('click', function() {
+                //Νέα Επαγγελματική Κάρτα
+                $('#title').text('Νέα Επαγγελματική Κάρτα');
+                clearCard();
+                $('#cardModal').modal('show');
+            });
+
+            $('#request_card').on('click', function() {
+                $('#title').text('Αναζήτηση Κάρτας');
+                clearCard();
+                $('#cardModal').modal('show');
+            });
+
+
+            $('#yes_card').on('click', function() {
+                saveContactCard();
+                drawCards();
+            });
+
+            $('#update_card').on('click', function() {
+                updateContactCard();
+                drawCards();
+            });
+
+            $('#list_cards').on('click', function() {
+                drawCards();
+            });
+
+            $('#yes_m').on('click', function() {
+                let addr_m = '';
+                saveEditedContact();
+                let rowData = datatable.row(parseInt(idx)).data();
+
+                if(rowData[1] !== $('#company_m').val()){
+                    rowData[1] = $('#company_m').val();
+                    datatable.row(parseInt(idx)).data(rowData).draw();
+                }
+
+                if(rowData[2] !== $('#manager_m').val()){
+                    rowData[2] = $('#manager_m').val();
+                    datatable.row(parseInt(idx)).data(rowData).draw();
+                }
+
+                if(rowData[3] !== $('#telephone_m').val()){
+                    rowData[3] = $('#telephone_m').val();
+                    datatable.row(parseInt(idx)).data(rowData).draw();
+                }
+
+                if (rowData[4] !== $('#seller_m').val()) {
+                    rowData[4] = $('#seller_m').val();
+                    datatable.row(parseInt(idx)).data(rowData).draw();
+                }
+
+                let street = $('#street_m').val() == null || $('#street_m').val() === '';
+                let area = $('#area_m').val() == null || $('#area_m').val() === '';
+                let city = $('#city_m').val() == null || $('#city_m').val() === '';
+                let nomos = $('#nomos_m').val() == null || $('#nomos_m').val() === '';
+                let zip = $('#zip_m').val() == null || $('#zip_m').val() === '';
+
+                if (street) {
+
+                } else {
+                    addr_m += $('#street_m').val();
+                }
+
+                if (area) {
+
+                } else {
+                    if (!street){
+                        addr_m += ', ';
+                    }
+
+                    addr_m += $('#area_m').val();
+                }
+
+                if (city) {
+
+                } else {
+                    if (!area){
+                        addr_m += ', ';
+                    }
+
+                    addr_m += $('#city_m').val();
+                }
+
+                if (zip) {
+
+                } else {
+                    if (!city){
+                        addr_m += ', ';
+                    }
+
+                    addr_m += $('#zip_m').val();
+                }
+
+                if (nomos) {
+
+                } else {
+                    if (!zip){
+                        addr_m += ', ';
+                    }
+
+                    addr_m += $('#nomos_m').val();
+                }
+
+                rowData[5] = addr_m;
+                datatable.row(parseInt(idx)).data(rowData).draw();
+
+                if(rowData[6] !== $('#email_m').val()){
+                    rowData[6] = $('#email_m').val();
+                    datatable.row(parseInt(idx)).data(rowData).draw();
+                }
+
+                $('#myModalNew').modal('hide')
+            });
+
+            let orderData = null;
+            let datatable = null;
+
+            //Διαγραφή
+            $('#menu0').on('click', function() {
+                $('#searchfor').val('');
+                $('#info').hide();
+
+                if($('#contact_no').val() === ''){
+                    showError('Αδυναμία διαγραφής χωρίς αύξοντα αριθμό. Προηγείται Αναζήτηση.');
+                    $('#dropDownList').prop('selectedIndex',0);
+                } else {
+                    deleteContact($('#contact_no').val());
+                    clearFields();
+                    $('#dropDownList').prop('selectedIndex', 0);
+                }
+            });
+
+            //Καταχώρηση
+            $('#menu1').on('click', function() {
+                if($('#date_recorded').val() === ''){
+                    showError('Ο αριθμός των συμπληρωμένων πεδίων δεν επαρκεί για αποθήκευση.')
+                } else {
+                    saveContact();
+                    $('#searchfor').val('');
+                    $('#dropDownList').prop('selectedIndex',0);
+                }
+            });
+
+            //Ενημέρωση
+            $('#menu2').on('click', function() {
+                if($('#contact_no').val() === ''){
+                    showError('Αδυναμία ενημέρωσης χωρίς αύξοντα αριθμό. Προηγείται Αναζήτηση.');
+                } else {
+                    saveEditedContactNonModal();
+                    $('#').prop('selectedIndex', 0);
+                    // datatable.row.add(['', $('#company_m').val(), $('#manager_m').val(), $('#telephone_m').val(), $('#seller_m').val(),
+                    //     $('#street_m').val() + ', ' + $('#area_m').val() + ', ' + $('#city_m').val() + ', ' + $('#nomos_m').val(), $('#email_m').val()]).draw().show().draw(false);
+                }
+            });
+
+            //Αναζήτηση
+            $('#menu3').on('click', function() {
+                if($('#searchfor').val() === ''){
+                    showError('Παρακαλώ συγκεκριμενοποιήστε την  αναζήτησή σας.');
+                } else {
+                    showContact();
+                }
+            });
+
+            //Καθαρισμός Πεδίων
+            $('#menu4').on('click', function() {
+                clearFields();
+                $('#dropDownList').prop('selectedIndex', 0);
+            });
+
+            //Αρχική Λίστα
+            $('#menu5').on('click', function() {
+                drawGrid1(url_final);
+            });
+
+
+            $('#card_menu1').on('click', function() {
+
+            });
+
+            function saveContact() {
+                $.ajax({
+                    type: "GET",
+                    url: '/savecontact',
+                    dataType: "json",
+                    data: {
+                        date_recorded: $('#date_recorded').val(),
+                        company: $('#company').val(),
+                        manager: $('#manager').val(),
+                        email: $('#email').val(),
+                        telephone: $('#telephone').val(),
+                        fax: $('#fax').val(),
+                        orders: $('#orders').val(),
+                        comments: $('#comments').val(),
+                        seller: $('#seller').val(),
+                        last_comm_date: $('#last_comm_date').val(),
+                        completed: $('#completed').prop("checked") ? 1 : 0,
+                        followup: $('#followup').val(),
+                        ignored: $('#ignored').prop("checked") ? 1 : 0,
+                        afm: $('#afm').val(),
+                        nomos: $('#nomos').val(),
+                        street: $('#street').val(),
+                        zip: $('#zip').val(),
+                        area: $('#area').val(),
+                        city: $('#city').val(),
+                    },
+                    success: function (data) {
+                        showSuccess(data);
+                        drawGrid1(url_final);
+                    }, error: function (jqXHR, exception) {
+                        showError("Η καταχώρηση της επαφής απέτυχε.");
+                    }
+                });
+            }
+
+            async function saveContactCard() {
+                $.ajax({
+                    type: "POST",
+                    url: '/contactcard/save',
+                    dataType: "json",
+                    data: {
+                        company: $('#card_company').val(),
+                        email: $('#card_email').val(),
+                        www: $('#card_www').val(),
+                        profession: $('#card_profession').val(),
+                        address: $('#card_address').val(),
+                        firstName: $('#card_firstname').val(),
+                        lastName: $('#card_lastname').val(),
+                        cellphone: $('#card_cell').val(),
+                        telephone: $('#card_phone').val()
+                    },
+                    success: function (data) {
+                        $('#cardModal').modal('hide');
+                        getContactCards();
+                    }, error: function (jqXHR, exception) {
+                        $('#cardModal').modal('hide');
+                        showError("Η καταχώρηση της επαφής απέτυχε.");
+                    }
+                });
+            }
+
+
+            async function updateContactCard() {
+                $.ajax({
+                    type: "PUT",
+                    url: '/card_update',
+                    dataType: "json",
+                    data: {
+                        company: $('#card_company').val(),
+                        email: $('#card_email').val(),
+                        www: $('#card_www').val(),
+                        profession: $('#card_profession').val(),
+                        address: $('#card_address').val(),
+                        firstName: $('#card_firstname').val(),
+                        lastName: $('#card_lastname').val(),
+                        cellphone: $('#card_cell').val(),
+                        telephone: $('#card_phone').val(),
+                        id: $('#card_id').val()
+                    },
+                    success: function (data) {
+                        $('#cardModal').modal('hide');
+                        drawCards();
+                    }, error: function (jqXHR, exception) {
+                        $('#cardModal').modal('hide');
+                        showError("Η καταχώρηση της επαφής απέτυχε.");
+                    }
+                });
+            }
+
+
+            function getContactCards(){
+                $.ajax({
+                    type: "GET",
+                    url: '/showcard',
+                    dataType: "json",
+                    success: function (data) {
+                        let div = '';
+                        let j = 3;
+
+                        for (let i = 0; i < data.length; i++) {
+                            let item = data[i];
+
+                            if(i % 3 === 0)
+                                div +=  "<div class='row'>";
+
+                            div +=  "<div class='col-md-4'>" +
+                                '<div class="product"> ' +
+                                '     <div class="card">'+
+                                '         <div class="card-body">'+
+                                '             <div class="d-flex align-items-center">'+
+                                '                 <div><i class="mdi mdi-card-account-details avatar-lg img-thumbnail mdi-48px"></i></div>'+
+                                '                 <div class="flex-1 ms-3">'+
+                                '                     <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">' + item.lastName + ' ' + item.firstName + '</a></h5>'+
+                                '                     <span class="badge badge-soft-success mb-0">' + item.profession + '</span>'+
+                                '                 </div>'+
+                                '             </div>'+
+                                '             <div class="mt-3 pt-1">'+
+                                '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-bank font-size-15 align-middle pe-2 text-primary"></i> ' + item.company + '</p>'+
+                                '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-phone font-size-15 align-middle pe-2 text-primary"></i> ' + item.cellPhone + '</p>'+
+                                '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-email font-size-15 align-middle pe-2 text-primary"></i> ' + item.email + '</p>'+
+                                '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>  ' + item.address + '</p>'+
+                                '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-web font-size-15 align-middle pe-2 text-primary"></i> ' + item.www + '</p>'+
+                                '             </div>'+
+                                '     </div>'+
+                                '   </div>' +
+                                '</div>' +
+                                '</div>';
+
+                            if(i === 2)  {
+                                j += 3
+                                div +=  "</div>";
+                            }
+                        }
+
+                        document.getElementById('container').innerHTML = div;
+                    }, error: function (jqXHR, exception) {
+                        showError("Η καταχώρηση της επαφής απέτυχε.");
+                    }
+                });
+            }
+
+
+            function deleteContact(contact_no) {
+                $.ajax({
+                    type: "DELETE",
+                    url: '/delete/' + contact_no,
+                    dataType: "json",
+                    success: function (data) {
+                        showSuccess(data);
+                        drawGrid1(url_final);
+                    },
+                    error: function (jqXHR) {
+                        showError(errorText(jqXHR));
+                    }
+                });
+            }
+
+
+
+
+            // function showContact() {
+            //     $.ajax({
+            //         type: "GET",
+            //         url: '/showcontact',
+            //         dataType: "json",
+            //         data: {
+            //             dropDownList: $('#dropDownList :selected').text(),
+            //             searchfor: $("#searchfor").val()
+            //         },
+            //         success: function (data) {
+            //                 if (typeof data.contact_no === "undefined"){
+            //                     showError(data);
+            //                 } else {
+            //                     $('#contact_no').val(data.contact_no);
+            //                     $('#date_recorded').val(data.date_recorded == null ? '' : reverseDate(data.date_recorded));
+            //                     $('#company').val(data.company);
+            //                     $('#manager').val(data.manager);
+            //                     $('#email').val(data.email);
+            //                     $('#telephone').val(data.telephone);
+            //                     $('#fax').val(data.fax);
+            //                     $('#orders').val(data.orders);
+            //                     $('#comments').val(data.comments);
+            //                     $('#seller').val(data.seller);
+            //                     $('#last_comm_date').val(data.last_comm_date == null ? '' : reverseDate(data.last_comm_date));
+            //                     $('#followup').val(data.followup == null ? '' : reverseDate(data.followup));
+            //                     $('#afm').val(data.afm);
+            //                     $('#street').val(data.address.street);
+            //                     $('#city').val(data.address.city);
+            //                     $('#nomos').val(data.address.nomos);
+            //                     $('#zip').val(data.address.zip);
+            //                     $('#area').val(data.address.area);
+            //
+            //                     if (data.completed === true) {
+            //                         $('#completed').prop('checked', true);
+            //                     } else {
+            //                         $('#completed').prop('checked', false);
+            //                     }
+            //
+            //                     if (data.ignored === true) {
+            //                         $('#ignored').prop('checked', true);
+            //                     } else {
+            //                         $('#ignored').prop('checked', false);
+            //                     }
+            //                 }
+            //         }, error: function (jqXHR) {
+            //             showError(errorText(jqXHR));
+            //         }
+            //     });
+            // }
+
+            function drawGrid1(url){
+                $('#loading').show();
+                $('#request').hide();
+                $('#example2 tbody').html("");
+
+                $.ajax({
+                    url: url,
+                    dataType: 'JSON',
+                    method: 'GET',
+                    success: function (result) {
+                        $('#request').show();
+                        $('#loading').hide();
+                        $('#example2 tbody').html("");
+                        orderData = result;
+
+                        if (datatable != null){
+                            datatable.clear();
+                            datatable.destroy();
+                        }
+
+                        for (let i = 0; i < result.length; i++){
+                            let item = result[i];
+                            let row = "<tr>";
+
+                            row += "<td class='contactno  bolded '>" + item.contact_no + "</td>";
+                            row += "<td class='col-sm-2'>" + (item.company == null ? "" : item.company) + "</td>";
+                            row += "<td >" + (item.manager  == null ? "" : item.manager) + "</td>";
+                            row += "<td >" + (item.telephone == null ? "" : item.telephone) + "</td>";
+                            row += "<td >" + (item.seller == null ? "" : item.seller) + "</td>";
+
+                            let addr = '';
+
+                            if(item.address == null) {
+                                row += "<td >&nbsp;</td>";
+                            } else {
+                                let street = item.address.street == null || item.address.street === '';
+                                let area = item.address.area == null || item.address.area === '';
+                                let city = item.address.city == null || item.address.city === '';
+                                let nomos = item.address.nomos == null || item.address.nomos === '';
+                                let zip = item.address.zip == null || item.address.zip === '';
+
+                                if (street) {
+
+                                } else {
+                                    addr += item.address.street;
+                                }
+
+                                if (area) {
+
+                                } else {
+                                    if (!street){
+                                        addr += ', ';
+                                    }
+
+                                    addr += item.address.area;
+                                }
+
+                                if (city) {
+
+                                } else {
+                                    if (!area){
+                                        addr += ', ';
+                                    }
+
+                                    addr += item.address.city;
+                                }
+
+                                if (zip) {
+
+                                } else {
+                                    if (!city){
+                                        addr += ', ';
+                                    }
+
+                                    addr += item.address.zip;
+                                }
+
+                                if (nomos) {
+
+                                } else {
+                                    if (!zip){
+                                        addr += ', ';
+                                    }
+
+                                    addr += item.address.nomos;
+                                }
+
+                                row += "<td class='col-sm-3'>" + addr + "</td>";
+                            }
+
+                            row += "<td >" + (item.email == null ? "" : item.email) + "</td>";
+                            row += "</tr>";
+                            $('#example2').append(row);
+                        }
+
+                        datatable = $('#example2').DataTable(
+                            {   orderCellsTop: true,
+                                initComplete: function () {
+                                        let api = this.api();
+
+                                        // For each column
+                                        api
+                                            .columns()
+                                            .eq(0)
+                                            .each(function (colIdx) {
+                                                // Set the header cell to contain the input element
+                                                let cell = $('.filters th').eq(
+                                                    $(api.column(colIdx).header()).index()
+                                                );
+
+                                                let title = $(cell).text();
+
+                                                if(colIdx > 0){
+                                                    $(cell).html('<input style="width: 100%" type="text" placeholder="' + title + '" />');
+                                                } else {
+                                                    $(cell).html('<input style="width: 100%;text-align: center" type="text" placeholder="' + title + '" />');
+                                                }
+
+                                                // On every keypress in this input
+                                                $(
+                                                    'input',
+                                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                                )
+                                                    .off('keyup change')
+                                                    .on('change', function (e) {
+                                                        // Get the search value
+                                                        $(this).attr('title', $(this).val());
+                                                        let regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                                                        var cursorPosition = this.selectionStart;
+                                                        // Search the column for that value
+                                                        api
+                                                            .column(colIdx)
+                                                            .search(
+                                                                this.value != ''
+                                                                    ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                                    : '',
+                                                                this.value != '',
+                                                                this.value == ''
+                                                            )
+                                                            .draw();
+                                                    })
+                                                    .on('keyup', function (e) {
+                                                        e.stopPropagation();
+
+                                                        $(this).trigger('change');
+                                                        $(this)
+                                                            .focus()[0]
+                                                            .setSelectionRange(cursorPosition, cursorPosition);
+                                                    });
+                                            });
+                                    },
+                                responsive: true,
+                                select:true,
+                                destroy:true,
+                                scrollY: "599px",
+                                sScrollXInner: "100%",
+                                scrollCollapse: true,
+                                language: {
+                                    search: 'Αναζήτηση:',
+                                    emptyTable: "Δεν υπάρχουν δεδομένα στον πίνακα",
+                                    info: "Εμφανίζονται _START_ έως _END_ από _TOTAL_ εγγραφές",
+                                    infoEmpty: "Εμφανίζονται 0 έως 0 από 0 εγγραφές",
+                                    infoFiltered: "(φιλτραρισμένες από _MAX_ συνολικά εγγραφές)",
+                                    infoThousands: ".",
+                                    lengthMenu: "Δείξε _MENU_ εγγραφές",
+                                    loadingRecords: "Φόρτωση...",
+                                    processing: "Επεξεργασία...",
+                                    zeroRecords: "Δεν βρέθηκαν εγγραφές που να ταιριάζουν",
+                                    paginate: {
+                                        first: "Πρώτη",
+                                        previous: "Προηγούμενη",
+                                        next: "Επόμενη",
+                                        last: "Τελευταία"
+                                    },
+                                    pagingType: 'full_numbers',
+                                },
+                                columnDefs: [
+                                    { target: [0], className: 'dt-center' },
+                                    { target: [0], className: 'bolded' },
+                                    { target: [0], className: 'bolded' },
+                                    { "width": "100px", "targets": [0] }
+                                ],
+                                lengthMenu: [
+                                    [40, 50, -1],
+                                    ['10', '50', '*']
+                                ],
+                                order: [0, 'desc'],
+                                dom: 'Bfrtip',
+                                buttons: [
+                                    {
+                                        extend: 'alert',
+                                        text: 'Αναζήτηση (από/έως)'
+                                    },
+                                    {
+                                        extend: 'print',
+                                        text: 'Εκτύπωση'
+                                    },
+                                    'spacer',
+                                    {
+                                        extend: 'spacer',
+                                        style: 'bar',
+                                        text: 'Μετατροπή Εγγραφών Πίνακα σε:'
+                                    },
+
+                                    'excel',
+                                    'spacer',
+                                    // 'pdf',
+                                    // {
+                                    //     extend: 'alert',
+                                    //     text: 'My button 2'
+                                    // },
+                                    // {
+                                    //     extend: 'alert',
+                                    //     text: '+ Add Contact',
+                                    //     action : function ( e, dt, node, config ) {
+                                    //         $('#cardModal').modal('show');
+                                    //     }
+                                    // }
+                                ]
+                            }
+                        );
+                    },
+                    error: function (jqXHR) {
+                        showError(errorText(jqXHR));
+                    }
+                });
+            }
+
+
+            function showError(text){
+                BootstrapDialog.show({
+                    title: "<i class='fas fa-exclamation-triangle fa-lg'></i>&nbsp;",
+                    message: text,
+                    closable: true,
+                    type: BootstrapDialog.TYPE_DANGER,
+                    closeByBackdrop: false,
+                    closeByKeyboard: false,
+                    buttons: [{
+                        label: 'Έξοδος',
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
+            }
+
+            function  showSuccess(text) {
+                BootstrapDialog.show({
+                    title: "<i class='fas fa-check fa-lg'></i>&nbsp;",
+                    message: text,
+                    closable: true,
+                    type: BootstrapDialog.TYPE_SUCCESS,
+                    closeByBackdrop: false,
+                    closeByKeyboard: false,
+                    buttons: [{
+                        label: 'Έξοδος',
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
+            }
+
+            $.fn.dataTable.ext.buttons.alert = {
+                className: 'buttons-alert',
+                id: '',
+
+                action: function ( e, dt, node, config ) {
+                    let url = '';
+
+                    if($('#from_date').val() === '' && $('#until_date').val() === ''){
+                        showError('Συμπληρώστε ημερομηνίες από/έως');
+                        return;
+                    } else {
+                        if($('#until_date').val() === '') {
+                            url = url_final + '/' + $('#from_date').val() + '/' + formatDate();
+                        } else if($('#from_date').val() === ''){
+                            url = url_final + '/' + constDate + '/' + $('#until_date').val();
+                        } else {
+                            url = url_final + '/' + $('#from_date').val() + '/' + $('#until_date').val();
+                        }
+                    }
+
+                    drawGrid1(url);
+                }
+            };
+
+            function saveEditedContact() {
+                $.ajax({
+                    type: "PUT",
+                    url: '/editcontact/' + $('#contact_no_m').val(),
+                    dataType: "json",
+                    data: {
+                        date_recorded: $('#date_recorded_m').val(),
+                        company: $('#company_m').val(),
+                        manager: $('#manager_m').val(),
+                        email: $('#email_m').val(),
+                        telephone: $('#telephone_m').val(),
+                        fax: $('#fax_m').val(),
+                        orders: $('#orders_m').val(),
+                        comments: $('#comments_m').val(),
+                        seller: $('#seller_m').val(),
+                        last_comm_date: $('#last_comm_date_m').val(),
+                        completed: $('#completed_m').prop("checked") ? 1 : 0,
+                        followup: $('#followup_m').val(),
+                        ignored: $('#ignored_m').prop("checked") ? 1 : 0,
+                        afm: $('#afm_m').val(),
+                        nomos: $('#nomos_m').val(),
+                        street: $('#street_m').val(),
+                        zip: $('#zip_m').val(),
+                        area: $('#area_m').val(),
+                        city: $('#city_m').val()
+                    },
+                    success: function (data) {
+                        showSuccess(data);
+                        // datatable.row(someId).data( newData ).draw();
+                    }, error: function (jqXHR) {
+                        showError(errorText(jqXHR));
+                    }
+                });
+            }
+
+            function saveEditedContactNonModal() {
+                $.ajax({
+                    type: "PUT",
+                    url: '/editcontact/' + $('#contact_no').val(),
+                    dataType: "json",
+                    data: {
+                        date_recorded: $('#date_recorded').val(),
+                        company: $('#company').val(),
+                        manager: $('#manager').val(),
+                        email: $('#email').val(),
+                        telephone: $('#telephone').val(),
+                        fax: $('#fax').val(),
+                        orders: $('#orders').val(),
+                        comments: $('#comments').val(),
+                        seller: $('#seller').val(),
+                        last_comm_date: $('#last_comm_date').val(),
+                        completed: $('#completed').prop("checked") ? 1 : 0,
+                        followup: $('#followup').val(),
+                        ignored: $('#ignored').prop("checked") ? 1 : 0,
+                        afm: $('#afm').val(),
+                        nomos: $('#nomos').val(),
+                        street: $('#street').val(),
+                        zip: $('#zip').val(),
+                        area: $('#area').val(),
+                        city: $('#city').val()
+                    },
+                    success: function (data) {
+                        showSuccess(data);
+                    }, error: function (jqXHR) {
+                        showError(errorText(jqXHR));
+                    }
+                });
+            }
+        });
+
+        function drawCards(){
+            $.ajax({
+                type: "GET",
+                url: '/showcard',
+                dataType: "json",
+                success: function (data) {
+                    let div = '';
+                    let j = 3;
+
+                    for (let i = 0; i < data.length; i++) {
+                        let item = data[i];
+
+                        if(i % 4 === 0)
+                            div +=  "<div class='row'>";
+
+                        div +=  "<div class='col-md-3'>" +
+                            '     <div class="card">'+
+                            '         <div class="card-body">'+
+                            '             <div class="d-flex align-items-center">'+
+                            '                 <div><i class="mdi mdi-card-account-details avatar-lg img-thumbnail mdi-48px"></i></div>'+
+                            '                 <div class="flex-1 ms-3">'+
+                            '                     <h5 class="mb-1"><a href="#" class="text-dark">' + item.lastName + ' ' + item.firstName + '</a></h5>'+
+                            '                     <span class="badge badge-soft-success mb-0">' + item.profession + '</span>'+
+                            '                 </div>'+
+                            '             </div>'+
+                            '             <div class="mt-3 pt-1">'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-bank font-size-15 align-middle pe-2 text-primary"></i> ' + item.company + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-cellphone font-size-15 align-middle pe-2 text-primary"></i> ' + item.cellPhone + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-phone font-size-15 align-middle pe-2 text-primary"></i> ' + item.telephone + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-email font-size-15 align-middle pe-2 text-primary"></i> ' + item.email + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>  ' + item.address + '</p>'+
+                            '                 <p class="text-muted mb-0 mt-1"><i class="mdi mdi-web font-size-15 align-middle pe-2 text-primary"></i> ' + item.www + '</p>'+
+                            '             </div>'+
+                            '               <br/> <button id="mybutton" onclick="updateCardInfo(' + item.id + ',' + "' " + item.lastName + " '" + ',' + "' " + item.firstName + " '" + ',' + "' " + item.profession + " '" + ',' + "' " + item.company + " '" + ',' + "' " + item.telephone + " '" +',' + "' " + item.cellPhone + " '" + ',' + "' " + item.email + " '" +',' + "' " + item.address + " '" + ',' + "' " + item.www + " '" +')" type="button" style="color: #18d26e"  class="btn border-0">Ενημέρωση</button>'+
+                            '                <button id="mybutton1" onclick="deleteCard(' + item.id + ')" type="button" style="color: #dc3545" class="btn border-0">Διαγραφή</button>'+
+                            '     </div>'+
+                            '   </div>' +
+                            '</div>';
+
+                        if(i === 3)  {
+                            j += 3
+                            div +=  "</div>";
+                        }
+                    }
+
+                    document.getElementById('cardsection').innerHTML = div;
+                }, error: function (jqXHR, exception) {
+                    showError("Η καταχώρηση της επαφής απέτυχε.");
+                }
+            });
+        }
+
+        function updateCardInfo(id, lastName, firstName, profession, company, telephone, cellPhone, email, address, www){
+            $('#card_firstname').val(firstName);
+            $('#card_lastname').val(lastName);
+            $('#card_company').val(company);
+            $('#card_phone').val(telephone);
+            $('#card_cell').val(cellPhone);
+            $('#card_email').val(email);
+            $('#card_profession').val(profession);
+            $('#card_address').val(address);
+            $('#card_www').val(www);
+            $('#card_id').val(id);
+            $('#title').text('Ενημέρωση Κάρτας');
+            $('#cardModal').modal('show');
+        }
+
+
+        function clearCard(){
+            $('#card_firstname').val('');
+            $('#card_lastname').val('');
+            $('#card_company').val('');
+            $('#card_phone').val('');
+            $('#card_cell').val('');
+            $('#card_email').val('');
+            $('#card_profession').val('');
+            $('#card_address').val('');
+            $('#card_www').val('');
+            $('#card_id').val(null);
+        }
+
+
+        function deleteCard(id){
+            const response = confirm("Επιβεβαίωση διαγραφής κάρτας.");
+
+            if (response) {
+                $.ajax({
+                    type: "DELETE",
+                    url: '/card_delete/' + id,
+                    dataType: "json",
+                    success: function (data) {
+                        drawCards();
+                    }, error: function (jqXHR) {
+                        showError(errorText(jqXHR));
+                    }
+                });
+            } else {
+
+            }
+        }
+
+        function updateCard(i){
+            $.ajax({
+                type: "PUT",
+                url: '/card_update',
+                dataType: "json",
+                data: {
+                    id: i
+                },
+                success: function (data) {
+                    showSuccess("Επιτυχής ενημέρωση κάρτας.")
+                }, error: function (jqXHR) {
+                    showError(errorText(jqXHR));
+                }
+            });
+        }
+
+        function showContactOnBlur(){
+            $.ajax({
+                type: "GET",
+                url: '/showcontact',
+                dataType: "json",
+                data: {
+                    dropDownList: $('#dropDownList :selected').text(),
+                    searchfor: $("#searchfor").val()
+                },
+                success: function (data) {
+                    if (typeof data.contact_no === "undefined"){
+                        showError(data);
+                    } else {
+                        $('#contact_no').val(data.contact_no);
+                        $('#date_recorded').val(data.date_recorded == null ? '' : reverseDate(data.date_recorded));
+                        $('#company').val(data.company);
+                        $('#manager').val(data.manager);
+                        $('#email').val(data.email);
+                        $('#telephone').val(data.telephone);
+                        $('#fax').val(data.fax);
+                        $('#orders').val(data.orders);
+                        $('#comments').val(data.comments);
+                        $('#seller').val(data.seller);
+                        $('#last_comm_date').val(data.last_comm_date == null ? '' : reverseDate(data.last_comm_date));
+                        $('#followup').val(data.followup == null ? '' : reverseDate(data.followup));
+                        $('#afm').val(data.afm);
+                        $('#street').val(data.address.street);
+                        $('#city').val(data.address.city);
+                        $('#nomos').val(data.address.nomos);
+                        $('#zip').val(data.address.zip);
+                        $('#area').val(data.address.area);
+
+                        if (data.completed === true) {
+                            $('#completed').prop('checked', true);
+                        } else {
+                            $('#completed').prop('checked', false);
+                        }
+
+                        if (data.ignored === true) {
+                            $('#ignored').prop('checked', true);
+                        } else {
+                            $('#ignored').prop('checked', false);
+                        }
+                    }
+                }, error: function (jqXHR) {
+                    showError(errorText(jqXHR));
+                }
+            });
+        }
+
+    </script>
+
+    <style>
+        .mdi-48px { font-size: 48px; }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: bolder;
+        }
+
+        .btn {
+            padding: .55rem 1.5rem .45rem;
+        }
+
+        .bolded {
+            font-weight:bold;
+        }
+
+        td { font-size: 13px; }
+
+        .input-xs {
+            height: 28px;
+            padding: 2px 5px;
+            font-size: 13px;
+            line-height: 1.5;
+            border-radius: 3px;
+        }
+
+        .input-search-xs {
+            height: 34px;
+            padding: 2px 5px;
+            font-size: 13px;
+            line-height: 1.5;
+            border-radius: 3px;
+        }
+
+        .text_filter{
+            width:45%;
+            min-width:200px;
+        }
+
+        thead input {
+            width: 100%;
+        }
+
+        .btn-outline-light {
+            /*background-color: dodgerblue !important;*/
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+        /*.dataTables_wrapper .dataTables_filter {*/
+        /*    float: none;*/
+        /*    text-align: center;*/
+        /*}*/
+    </style>
+
+    <style>
+
+        .top {
+            text-decoration: none;
+            padding: 10px;
+            font-family: sans-serif;
+            color: #fff;
+            background: #000;
+            border-radius: 100px;
+        }
+        .card {
+            margin-bottom: 24px;
+            box-shadow: 0 2px 3px #e4e8f0;
+        }
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1px solid #eff0f2;
+            border-radius: 1rem;
+        }
+        .avatar-md {
+            height: 4rem;
+            width: 4rem;
+        }
+        .rounded-circle {
+            border-radius: 50%!important;
+        }
+        .img-thumbnail {
+            padding: 0.25rem;
+            background-color: #f1f3f7;
+            border: 1px solid #eff0f2;
+            border-radius: 0.75rem;
+        }
+        .avatar-title {
+            align-items: center;
+            background-color: #3b76e1;
+            color: #fff;
+            display: flex;
+            font-weight: 500;
+            height: 100%;
+            justify-content: center;
+            width: 100%;
+        }
+        .bg-soft-primary {
+            background-color: rgba(59,118,225,.25)!important;
+        }
+        a {
+            text-decoration: none!important;
+        }
+        .badge-soft-danger {
+            color: #f56e6e !important;
+            background-color: rgba(245,110,110,.1);
+        }
+        .badge-soft-success {
+            color: #63ad6f !important;
+            background-color: rgba(99,173,111,.1);
+        }
+        .mb-0 {
+            margin-bottom: 0!important;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.6em;
+            font-size: 75%;
+            font-weight: 500;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.75rem;
+        }
+    </style>
+</head>
+<body style='margin:40px;'>
+<div>
+    <nav class="navbar  navbar-expand-md fixed-top " style="background: #D3D3D4;">
+        <div class="container-fluid">
+            <img class="img-fluid" th:src="@{/img/contacts(3).png}" width="50pt" height="50pt" alt=""/>
+            <a class="navbar-brand"
+               style="font-size: xx-large; font-weight: bolder;padding-right: 70pt" href="#">&nbsp;&nbsp;e-επαφές</a>
+            <a href="" class="nav-link text-center" >
+                <div>
+                    <i class="fas fa-home fa-lg mb-1"></i>
+                </div>
+                <h7 th:inline="text">Καλωσήλθες &nbsp;&nbsp;Βασίλη</h7>
+            </a>
+
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown" style="padding-right: 50pt">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" style="color: black">Επιλέξτε Ενέργεια</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" id="menu0"> <i class="fa fa-user-minus" aria-hidden="true"></i> Διαγραφή</a>
+                            <a class="dropdown-item" id="menu1"> <i class="fa fa-user-plus" aria-hidden="true"></i> Καταχώρηση</a>
+                            <a class="dropdown-item" id="menu2"><i class="fa fa-check-square"></i>&nbsp; Ενημέρωση</a>
+<!--                            <a class="dropdown-item" id="menu3"><i class="fas fa-search"></i> &nbsp;Αναζήτηση</a>-->
+                            <a class="dropdown-item" id="menu4"> <i class="fas fa-eraser"></i> &nbsp;Καθαρισμός Πεδίων</a>
+                            <a class="dropdown-item" id="menu5"> <i class="fas fa-list"></i> &nbsp;Αρχική Λίστα</a>
+                        </div>
+                    </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <form style="padding-top: 4pt" th:action="@{/logout}" method="post">
+                        <input type="submit" style="width: 70pt" value="Έξοδος"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <br/><br/><br/><br/><br><br>
+<!--    <div class="justify-content-center w-100" style="padding-left: 250pt;padding-right: 250pt">-->
+    <div class="justify-content-center w-80" >
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <ul class="nav nav-tabs"  id="myTab" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="medical-history-tab" data-bs-toggle="tab" data-bs-target="#medical-history" type="button" role="tab" aria-controls="medical-history"
+                            aria-selected="false"> <i class="fas fa-users"></i> Λίστα Επαφών</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link " id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab" aria-controls="personal" aria-selected="true" style="font-size: medium">
+                        <i class="fas fa-user"></i> Αναζήτηση Επαφής </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatment" type="button" role="tab" aria-controls="treatment" aria-selected="false">
+                        <i class="fas fa-address-card"></i> Επαγγελματικές Κάρτες</button>
+                </li>
+            </ul>
+            <div class="tab-content pt-2  w-80" style="font-size: 13px" id="myTabContent">
+                <div class="tab-pane fade show container-fluid"  id="personal" role="tabpanel" aria-labelledby="home-tab">
+                    <section class="section">
+                        <div class="row" >
+                            <div class="col-sm-8 ">
+<!--                                <div class="card">-->
+<!--                                    <div class="card-body">-->
+                                        <!-- General Form Elements -->
+                                        <br>
+                                        <form class="col-lg-11 offset-lg-4 " >
+                                            <br>
+                                            <div class="row">
+                                                <div class="row d-flex justify-content-center" >
+                                                    <div class="col-sm-2 ">
+                                                        <select class="mdb-select md-form" style="  height: 22pt"  name="dropDownList" id="dropDownList">
+                                                            <option value="1" selected>Όρος Αναζήτησης</option>
+                                                            <option value="telephone">Τηλέφωνο</option>
+                                                            <option value="company">Εταιρεία</option>
+                                                            <option value="manager">Υπεύθυνο</option>
+                                                            <option value="address">Διεύθυνση</option>
+                                                            <option value="city">Πόλη</option>
+                                                            <option value="afm">ΑΦΜ</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="input-group input-group-sm mb-3">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-pen"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" onblur="showContactOnBlur()" id="searchfor"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br/><br/>
+                                            <div class="form-group">
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-2">
+                                                        <div class="form-group ">
+                                                            <div class="form-outline">
+                                                                <div class="input-group input-xs ">
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text input-xs"><i class="fa fa-tags"></i></span>
+                                                                    </div>
+                                                                    <input type="text" class="form-control input-xs" id="contact_no" readonly/>
+                                                                </div>
+                                                                <label style="font-size: small" class="form-label input-xs" for="seller">Αύξ. Αριθμός</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs date" id="recorded">
+                                                                <input type="text" class="form-control input-xs" id="date_recorded" autocomplete="off"/>
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="date_recorded">Ημερομηνία</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-envelope"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="email" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="email">e-mail</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="seller" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="seller">Πωλητής</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-building"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="company" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="company">Εταιρεία</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="manager" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="manager">Υπεύθυνος</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-phone"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="telephone" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="telephone">Τηλέφωνο</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-fax"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="fax" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="fax">Φάξ</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs date" id="last">
+                                                                <input type="text" class="form-control input-xs" id="last_comm_date" autocomplete="off"/>
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs"
+                                                                   for="last_comm_date">Τελευταία Επικοινωνία</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="input-group input-xs date" id="follows">
+                                                            <input type="text" class="form-control input-xs" id="followup" autocomplete="off"/>
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                                            </div>
+                                                        </div>
+                                                        <label style="font-size: small" class="form-label input-xs" for="followup">Follow-up</label>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="input-group input-xs" id="afmm">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text input-xs"><i class="far fa-file"></i></span>
+                                                            </div>
+                                                            <input type="text" class="form-control input-xs" id="afm" autocomplete="on"/>
+                                                        </div>
+                                                        <label style="font-size: small" class="form-label input-xs" for="followup">Α.Φ.Μ.</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="form-check">
+                                                        <div class="col-sm-2">
+                                                            <input class="form-check-input me-2 " type="checkbox" name="counting" id="completed" value="Ολοκληρώθηκε"/>
+                                                            <label style="font-size: small" class="form-check-label" for="completed">
+                                                                Ολοκληρώθηκε
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <div class="col-sm-2">
+                                                            <input class="form-check-input me-2 " type="checkbox" name="counting" id="ignored" value="Δεν Ενδιαφέρονται"/>
+                                                            <label style="font-size: small" class="form-check-label" for="ignored">
+                                                                Δεν Ενδιαφέρονται
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                </div>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-4">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fas fa-street-view"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="street" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="street">Διεύθυνση (Οδός-Αριθμός)</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fas fa-city"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="city"
+                                                                       autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="city">Πόλη</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fas fa-map-pin"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="zip" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="zip">Ταχυδρομικός Κώδικας</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fas fa-map-marker"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="area" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="area">Περιοχή</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-outline">
+                                                            <div class="input-group input-xs ">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control input-xs" id="nomos" autocomplete="on"/>
+                                                            </div>
+                                                            <label style="font-size: small" class="form-label input-xs" for="nomos">Νομός</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-outline mb-4 ">
+                                                            <textarea class="form-control form-control-sm" id="orders" rows="4"></textarea>
+                                                            <label style="font-size: small" class="form-label" for="orders">Παραγγελία</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+                                                        <div class="form-outline mb-4">
+                                                            <textarea class="form-control form-control-sm" id="comments" rows="4"></textarea>
+                                                            <label style="font-size: small" class="form-label" for="comments">Σχόλια</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form><!-- End General Form Elements -->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+
+                        </div>
+                    </section>
+                </div>
+
+                <div class="tab-pane fade show active container-fluid w-90"  id="medical-history" role="tabpanel" aria-labelledby="medical-history-tab">
+                    <section class="section">
+                            <div class="col-lg-12">
+                                <form class="col-lg-10 offset-lg-1">
+                                    <div class="row justify-content-center">
+                                        <div class="col-12" >
+                                            <div id="loading">
+                                                <i class="fa fa-cog fa-spin fa-3x fa-fw"> </i>
+                                                Φόρτωση επαφών...
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="form-outline">
+                                                    <div class="input-group input-xs date" id="aa">
+                                                        <label style="font-size: small"
+                                                               class="form-label input-xs"
+                                                               for="until_date">Ημερομηνίες
+                                                            Αναζήτησης</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-outline">
+                                                    <div class="input-group input-xs date" id="ff">
+                                                        <input type="text" placeholder="Από"
+                                                               class="form-control input-xs"
+                                                               id="from_date" autocomplete="off"
+                                                               style="width: 59pt"/>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-outline">
+                                                    <div class="input-group input-xs date" id="tt">
+                                                        <input type="text" placeholder="Έως"
+                                                               class="form-control input-xs"
+                                                               id="until_date" autocomplete="off"
+                                                               style="width: 59pt"/>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br><br>
+                                            <div id="request">
+                                                <br/>
+                                                <div class="table-responsive">
+                                                    <table id="example2"
+                                                           class=" row-border hover"
+                                                           style="z-index: -1">
+                                                        <thead>
+                                                        <tr>
+                                                            <th><i class="fas fa-hashtag"></i>&nbsp; A/A</th>
+                                                            <th><i class="fas fa-building"></i>&nbsp; Εταιρεία</th>
+                                                            <th><i class="fas fa-user"></i>&nbsp; Προϊστάμενος</th>
+                                                            <th><i class="fas fa-phone"></i>&nbsp; Τηλέφωνο</th>
+                                                            <th><i class="fas fa-user"></i>&nbsp;Πωλητής</th>
+                                                            <th><i class="fas fa-street-view"></i>&nbsp; Διεύθυνση</th>
+                                                            <th><i class="fas fa-at"></i>&nbsp; e-mail</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                    </section>
+                </div>
+
+                <div class="tab-pane fade show" id="treatment" role="tabpanel" aria-labelledby="treatment-tab">
+                    <br><br>
+
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" style="color: black;font-size: medium">Επιλέξτε Ενέργεια</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" id="new_card"> <i class="fa fa-plus" aria-hidden="true"></i> &nbsp;Καταχώρηση</a>
+                            <a class="dropdown-item" id="request_card"> <i class="fas fa-address-card"></i> &nbsp;Αναζήτηση</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" id="list_cards"> <i class="fas fa-list"></i> &nbsp;Αρχική Λίστα</a>
+
+                        </div>
+                    </div>&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <section class="section">
+<!--                        <div class="row">-->
+<!--                            <div class="col-xl-2">-->
+<!--                                <button type="button" class="btn btn-success btn-sm" id="new_card">Προσθήκη Κάρτας</button>-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-2">-->
+<!--                                <button type="button" class="btn btn-secondary btn-sm" id="request_card">Αναζήτηση Κάρτας</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <br><br><br><br>
+
+                        <div class="row" id="cardsection">
+
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<br/><br/><br/><br/>
+<div class="text-center p-3">
+    © 2024 Copyright:
+    <a>Perfect Shade ΑΕΒΕ. All rights reserved.</a>
+</div>
+<div id="myModalNew" class="modal fade bd-example-modal-xl" style="height: auto" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ενημέρωση Επαφής</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group ">
+                                    <input type="text" id="contact_no_m" class="form-control input-xs" readonly/>
+                                    <label style="font-size: small" class="form-label" for="contact_no_m">Αύξων
+                                        Αριθμός</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs date" id="recorded_m">
+                                        <input type="text" class="form-control input-xs" id="date_recorded_m" autocomplete="off"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="date_recorded_m">Ημερομηνία</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-envelope"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="email_m" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="email_m">e-mail</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="seller_m" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="seller_m">Πωλητής</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-building"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="company_m" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="company_m">Εταιρεία</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="manager_m" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="manager_m">Υπεύθυνος</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-phone"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="telephone_m" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="telephone_m">Τηλέφωνο</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs ">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text input-xs"><i class="fa fa-fax"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control input-xs" id="fax_m" autocomplete="on"/>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs" for="fax_m">Φάξ</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-outline">
+                                    <div class="input-group input-xs date" id="last_m">
+                                        <input type="text" class="form-control input-xs" id="last_comm_date_m" autocomplete="off"/>
+                                        <div class="input-group-append"><span class="input-group-text input-xs">
+                                                <i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: small" class="form-label input-xs"
+                                           for="last_comm_date_m">Τελευταία Επικοινωνία</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group input-xs date" id="follows_m">
+                                    <input type="text" class="form-control input-xs" id="followup_m"
+                                           autocomplete="off"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text input-xs"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                </div>
+                                <label style="font-size: small" class="form-label input-xs" for="followup_m">Follow-up</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="checkbox-inline " type="checkbox" name="counting" id="completed_m" value="Ολοκληρώθηκε"/>
+                        <label style="font-size: small" class="form-check-label" for="completed_m">
+                            Ολοκληρώθηκε
+                        </label> &nbsp;&nbsp;
+                        <input class="checkbox-inline " type="checkbox" name="counting" id="ignored_m" value="Δεν Ενδιαφέρονται"/>
+                        <label style="font-size: small" class="form-check-label" for="ignored_m">
+                            Δεν Ενδιαφέρονται
+                        </label>
+                    </div>
+
+                    <div class="col-sm-5" style="padding-top: 17px">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="street_m" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="street_m">Διεύθυνση (Οδός-αριθμός)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-5" style="padding-top: 17px">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-city"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="city_m" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="city_m">Πόλη</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2" style="padding-top: 17px">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="zip_m" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="zip_m">Ταχ. Κώδικας</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="area_m" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="area_m">Περιοχή</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="nomos_m" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="nomos_m">Νομός</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-outline mb-4 ">
+                            <textarea class="form-control form-control-sm" id="orders_m" rows="7" style="resize:none;"></textarea>
+                            <label style="font-size: small" class="form-label" for="orders_m">Παραγγελία</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-outline mb-4">
+                            <textarea class="form-control form-control-sm" id="comments_m" rows="7" style="resize:none;"></textarea>
+                            <label style="font-size: small" class="form-label" for="comments_m">Σχόλια</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal" id="no_m">Ακύρωση</button>
+                    <button type="button" class="btn btn-success btn-sm" id="yes_m">Ενημέρωση</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="cardModal" class="modal fade " style="height: auto" tabindex="-1">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="title"></span></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <input hidden="hidden" type="text" class="form-control input-xs" id="card_id" autocomplete="on"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_firstname" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs"
+                                   for="card_firstname">Όνομα</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-user"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_lastname" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs"
+                                   for="card_lastname">Επώνυμο</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-building"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_company" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs"
+                                   for="card_company">Εταιρεία</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fas fa-phone-square"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_phone" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs"
+                                   for="card_phone">Τηλέφωνο</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fas fa-mobile"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_cell" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="card_cell">Κινητό</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-at"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_email" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="card_email">e-mail</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-user-tie"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_profession" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs"
+                                   for="card_profession">Επάγγελμα</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fa fa-address-card"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_address" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs"
+                                   for="card_address">Διεύθυνση </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <div class="form-outline">
+                            <div class="input-group input-xs ">
+                                <div class="input-group-append">
+                                    <span class="input-group-text input-xs"><i class="fas fa-globe"></i></span>
+                                </div>
+                                <input type="text" class="form-control input-xs" id="card_www" autocomplete="on"/>
+                            </div>
+                            <label style="font-size: small" class="form-label input-xs" for="card_www">Website </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal" id="no_card">Ακύρωση</button>
+                    <button type="button" class="btn btn-success btn-sm" id="yes_card">Καταχώρηση</button>
+                    <button type="button" class="btn btn-info btn-sm" id="update_card">Ενημέρωση</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="top" href="#">Back to Top ↑</a>
+</body>
+</html>
