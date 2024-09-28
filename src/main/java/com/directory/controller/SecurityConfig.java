@@ -54,14 +54,12 @@ public class SecurityConfig  {
 //    }
 
     private final UserDetailsService userDetailsService;
-    private final CustomUsernameSessionFilter customUsernameSessionFilter;
 
 
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, CustomUsernameSessionFilter customUsernameSessionFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.customUsernameSessionFilter = customUsernameSessionFilter;
     }
 
     @Bean
@@ -80,7 +78,8 @@ public class SecurityConfig  {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Use as required
-                ).addFilterBefore(customUsernameSessionFilter, UsernamePasswordAuthenticationFilter.class)
+                )
+//                .addFilterBefore(customUsernameSessionFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         // Permit access to these endpoints without authentication
                         .requestMatchers( "/pages-login", "/pages-register/**").permitAll()
@@ -95,13 +94,15 @@ public class SecurityConfig  {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
                         .permitAll()
                 )
 //                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ).authenticationProvider(authenticationProvider());
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                )
+        .authenticationProvider(authenticationProvider());
 
         return http.build();
     }

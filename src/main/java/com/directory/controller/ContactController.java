@@ -83,16 +83,16 @@ public class ContactController {
         }
     }
 
-    @GetMapping("/logout")
-    public String logout() {
-        return "redirect:/login?logout";
-    }
+//    @GetMapping("/logout")
+//    public String logout() {
+//        return "redirect:/login?logout";
+//    }
 
-
-    @GetMapping({"/main"})
-    public String showMainForm() {
-        return "main";
-    }
+//
+//    @GetMapping({"/main"})
+//    public String showMainForm() {
+//        return "main";
+//    }
 
     @GetMapping({"/cards"})
     public String showCards() {
@@ -100,12 +100,12 @@ public class ContactController {
     }
 
 
-    @GetMapping({"/pages-login"})
-    public String showLogin() {
-//        User user = new User();
-//        model.addAttribute("user", user);
-        return "pages-login";
-    }
+//    @GetMapping({"/pages-login"})
+//    public String showLogin() {
+////        User user = new User();
+////        model.addAttribute("user", user);
+//        return "pages-login";
+//    }
 
     @RequestMapping({"/login-error"})
     public String loginError(Model model) {

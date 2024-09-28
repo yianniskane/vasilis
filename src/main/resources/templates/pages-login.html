@@ -44,7 +44,7 @@
 
               <div class="d-flex justify-content-center py-4">
                 <a th:href="@{/}" class="d-flex align-items-center w-auto">
-                  <img src="../img/contacts(3).png" width="50pt" height="50pt" alt="">
+                  <img src="/img/contacts(3).png" width="50pt" height="50pt" alt="">
                   <img class="img-fluid" th:src="@{/img/contacts(3).png}" width="50pt" height="50pt" alt=""/>
                   <span class="d-none d-lg-block" style="font-weight: bold;font-size: xx-large">&nbsp;&nbsp;e-επαφές</span>
                 </a>
@@ -60,7 +60,7 @@
                   </div>
                   <p th:if="${loginError}" class="error" style="color: red" >Λάθος διαπιστευτήρια. Δοκιμάστε ξανά</p>
 
-                  <form class="row g-3 needs-validation" method="post" th:action="@{/main}">
+                  <form class="row g-3 needs-validation" method="post" th:action="@{/pages-login}">
                     <div class="col-12">
                       <label for="email" class="form-label">email</label>
                       <div class="input-group has-validation">
