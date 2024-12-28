@@ -29,6 +29,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -128,12 +130,17 @@ public class ContactController {
     @ResponseBody
     public ResponseEntity<String> showContact(@RequestParam("searchfor") String searchfor,
                                               @RequestParam("dropDownList") String dropDownList) throws JsonProcessingException {
-        List<Contact> contact = null;
+        List<Contact> contact = new ArrayList<>();
+
+        if(dropDownList.contains("ναζήτησ")){
+            Contact cntct = new Contact();
+            cntct.setError("Επιλέξτε συγκεκριμένο όρο αναζήτησης.");
+            contact.add(cntct);
+            return ResponseEntity.status(HttpStatus.OK).body(Utility.generateJSON(contact.get(0)));
+        }
 
         try {
-            if (dropDownList == null) {
-                System.out.println("dropdown list is null");
-            } else if (searchfor != null && !searchfor.equals("".trim())) {
+          if (!searchfor.equals("".trim())) {
                 contact = switch (dropDownList) {
                     case "Εταιρεία" -> this.serviceImpl.findContactByCompany(searchfor);
                     case "Υπεύθυνο" -> this.serviceImpl.findContactByManager(searchfor);
@@ -144,24 +151,33 @@ public class ContactController {
                     default -> contact;
                 };
             } else {
-                System.out.println("search for is null");
+              Contact cntct = new Contact();
+              cntct.setError("Η αναζήτηση δεν επέστρεψε αποτελέσματα.");
+              contact.add(cntct);
+              return ResponseEntity.ok(Utility.generateJSON(contact.get(0)));
             }
 
-            ObjectMapper mapper = (new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT);
             if (contact == null || contact.isEmpty()) {
-                return ResponseEntity.ok(mapper.writeValueAsString("Η επαφή με τα στοιχεία που δώσατε δεν βρέθηκε."));
+                Contact cntct = new Contact();
+                cntct.setError("Η επαφή με τα στοιχεία που δώσατε δεν βρέθηκε.");
+                contact.add(cntct);
+                return ResponseEntity.ok(Utility.generateJSON(contact.get(0)));
             }
 
             if (contact.size() > 1) {
-                return ResponseEntity.ok(mapper.writeValueAsString("Βρέθηκαν περισσότερες απο μια επαφές με τα στοιχεία που δώσατε. Παρακαλώ συγκεκριμενοποιήστε την αναζήτησή σας."));
+                Contact cntct = new Contact();
+                cntct.setError("Βρέθηκαν περισσότερες απο μια επαφές με τα στοιχεία που δώσατε. Παρακαλώ συγκεκριμενοποιήστε την αναζήτησή σας.");
+                contact.add(cntct);
+                return ResponseEntity.ok(Utility.generateJSON(contact.get(0)));
             }
         } catch (Exception e) {
             logger.error("showContact -- error in showing contact {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Αδυναμία έυρεσης επαφής."));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utility.generateJSON(Collections.singletonList("Αδυναμία έυρεσης επαφής.")));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(Utility.generateJSON(contact.get(0)));
     }
+
 
     @PutMapping(
             value = {"/editcontact/{contact_no}"},
@@ -171,11 +187,11 @@ public class ContactController {
     public ResponseEntity<String> editContact(@PathVariable("contact_no") String contact_no, @RequestParam("date_recorded") String date_recorded, @RequestParam("company") String company, @RequestParam("manager") String manager, @RequestParam("nomos") String nomos, @RequestParam("city") String city, @RequestParam("zip") String zip, @RequestParam("street") String street, @RequestParam("area") String area, @RequestParam("telephone") String telephone, @RequestParam(value = "email",required = false) String email, @RequestParam(value = "fax",required = false) String fax, @RequestParam(value = "orders",required = false) String orders, @RequestParam(value = "comments",required = false) String comments, @RequestParam(value = "seller",required = false) String seller, @RequestParam(value = "last_comm_date",required = false) String last_comm_date, @RequestParam(value = "completed",required = false) String completed, @RequestParam(value = "followup",required = false) String followup, @RequestParam(value = "ignored",required = false) String ignored, @RequestParam(value = "afm",required = false) String afm) throws JsonProcessingException {
         try {
             if (!email.isEmpty() && !Utility.validateEmail(email)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το email."));
+                return ResponseEntity.status(HttpStatus.OK).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το email."));
             } else if (!fax.isEmpty() && !Utility.validateTelephone(fax)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το fax."));
+                return ResponseEntity.status(HttpStatus.OK).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το fax."));
             } else if (!telephone.isEmpty() && !Utility.validateTelephone(telephone)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το τηλέφωνο."));
+                return ResponseEntity.status(HttpStatus.OK).body((new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString("Η καταχώρηση απέτυχε. Παρακαλώ ελέγξτε το τηλέφωνο."));
             } else {
                 int res = this.serviceImpl.updateContact(date_recorded.isEmpty() ? null : date_recorded, telephone, email, street, area, city, nomos, zip, seller, manager, company, afm, comments, completed.equals("1") ? Boolean.TRUE : Boolean.FALSE, followup.isEmpty() ? null : followup, ignored.equals("1") ? Boolean.TRUE : Boolean.FALSE, last_comm_date.isEmpty() ? null : last_comm_date, orders, Integer.valueOf(contact_no));
                 ObjectMapper mapper = (new ObjectMapper()).enable(SerializationFeature.INDENT_OUTPUT);
@@ -209,7 +225,6 @@ public class ContactController {
             value = {"/card_update"},
             produces = {"application/json"}
     )
-    @ResponseBody
     public ResponseEntity<Void> updateCard(@RequestParam("id") String id,
                                            @RequestParam("profession") String profession,
                                            @RequestParam("company") String company,
@@ -413,7 +428,6 @@ public class ContactController {
             value = {"/contactcard/save"},
             produces = {"application/json"}
     )
-    @ResponseBody
     public ResponseEntity<String> saveCard(@RequestParam("email") String email,
                                            @RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName,

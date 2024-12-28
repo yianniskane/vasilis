@@ -92,6 +92,7 @@ public class Contact implements Serializable {
     )
     private String afm;
 
-
+    @Transient
+    private String error;
 }
 

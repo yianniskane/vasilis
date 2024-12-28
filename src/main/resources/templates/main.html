@@ -304,6 +304,11 @@
 
             });
 
+
+            $('#searchTerm').on('click', function() {
+                showContactOnBlur();
+            });
+
             function saveContact() {
                 $.ajax({
                     type: "GET",
@@ -366,7 +371,7 @@
             }
 
 
-            async function updateContactCard() {
+            function updateContactCard() {
                 $.ajax({
                     type: "PUT",
                     url: '/card_update',
@@ -744,22 +749,7 @@
             }
 
 
-            function showError(text){
-                BootstrapDialog.show({
-                    title: "<i class='fas fa-exclamation-triangle fa-lg'></i>&nbsp;",
-                    message: text,
-                    closable: true,
-                    type: BootstrapDialog.TYPE_DANGER,
-                    closeByBackdrop: false,
-                    closeByKeyboard: false,
-                    buttons: [{
-                        label: 'Έξοδος',
-                        action: function(dialogRef){
-                            dialogRef.close();
-                        }
-                    }]
-                });
-            }
+
 
             function  showSuccess(text) {
                 BootstrapDialog.show({
@@ -989,6 +979,23 @@
             });
         }
 
+        function showError(text){
+            BootstrapDialog.show({
+                title: "<i class='fas fa-exclamation-triangle fa-lg'></i>&nbsp;",
+                message: text,
+                closable: true,
+                type: BootstrapDialog.TYPE_DANGER,
+                closeByBackdrop: false,
+                closeByKeyboard: false,
+                buttons: [{
+                    label: 'Έξοδος',
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        }
+
         function showContactOnBlur(){
             $.ajax({
                 type: "GET",
@@ -999,8 +1006,8 @@
                     searchfor: $("#searchfor").val()
                 },
                 success: function (data) {
-                    if (typeof data.contact_no === "undefined"){
-                        showError(data);
+                    if (data.error !== null) {
+                        showError(data.error);
                     } else {
                         $('#contact_no').val(data.contact_no);
                         $('#date_recorded').val(data.date_recorded == null ? '' : reverseDate(data.date_recorded));
@@ -1034,7 +1041,7 @@
                         }
                     }
                 }, error: function (jqXHR) {
-                    showError(errorText(jqXHR));
+                    // showError(errorText(jqXHR));
                 }
             });
         }
@@ -1245,7 +1252,10 @@
                                             <div class="row">
                                                 <div class="row d-flex justify-content-center" >
                                                     <div class="col-sm-2 ">
-                                                        <select class="mdb-select md-form" style="  height: 22pt"  name="dropDownList" id="dropDownList">
+                                                        <button type="button" class="btn btn-success btn-sm" id="searchTerm">Αναζήτηση</button>
+                                                    </div>
+                                                    <div class="col-sm-2 ">
+                                                        <select class="mdb-select md-form" style="height: 30pt"  name="dropDownList" id="dropDownList">
                                                             <option value="1" selected>Όρος Αναζήτησης</option>
                                                             <option value="telephone">Τηλέφωνο</option>
                                                             <option value="company">Εταιρεία</option>
@@ -1259,9 +1269,9 @@
                                                         <div class="input-group input-group-sm mb-3">
                                                             <div class="input-group input-xs ">
                                                                 <div class="input-group-append">
-                                                                    <span class="input-group-text input-xs"><i class="fa fa-pen"></i></span>
+                                                                    <span class="input-group-text input-xs"  style="height: 30pt"><i class="fa fa-pen"></i></span>
                                                                 </div>
-                                                                <input type="text" class="form-control input-xs" onblur="showContactOnBlur()" id="searchfor"/>
+                                                                <input type="text" class="form-control input-xs" style="height: 30pt" id="searchfor"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1608,6 +1618,7 @@
             </div>
         </div>
     </div>
+</div>
 
 <br/><br/><br/><br/>
 <div class="text-center p-3">
